@@ -6,3 +6,6 @@ data/
 .dev.vars
 .wrangler/
 *.log
+dist-worker/
+.env.local
+.dev.vars.*
