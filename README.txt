@@ -75,3 +75,8 @@ contents and Scryfall printing matches. Includes SLD, token, Countdown Kit,
 and the exact reprints in the Angels Commander deck. Fixed contents are
 included; variable bonus packs are excluded. Custom admin contents remain
 preserved. Old inventory data picks up updated contents without re-upload.
+
+MOBILE SINGLES
+At narrow widths the singles inventory uses stacked cards, with labeled
+set/language/quantity/price fields and full-width Add to cart buttons.
+Desktop keeps the table. Pagination and vertical panel scrolling remain.

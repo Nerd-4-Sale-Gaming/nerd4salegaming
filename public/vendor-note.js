@@ -1,0 +1,1 @@
+(async()=>{const section=document.getElementById('vendor-note'),text=document.getElementById('vendor-note-text');if(!section)return;try{const r=await fetch('/api/vendor-note');if(!r.ok)throw Error();const data=await r.json();text.textContent=data.text;section.hidden=!data.text}catch{text.textContent='Contact us for the latest news from Nerd 4 Sale Gaming.'}})();
