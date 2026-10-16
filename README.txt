@@ -80,3 +80,6 @@ MOBILE SINGLES
 At narrow widths the singles inventory uses stacked cards, with labeled
 set/language/quantity/price fields and full-width Add to cart buttons.
 Desktop keeps the table. Pagination and vertical panel scrolling remain.
+
+SINGLES PRICE REFRESH
+While the local server is running, singles prices are checked at startup and every six hours using Scryfall. Sealed prices still come from the imported TCGplayer inventory. Archived cart prices remain locked. Cloudflare deployment needs its own scheduled job; the local timer does not run when this app is closed.

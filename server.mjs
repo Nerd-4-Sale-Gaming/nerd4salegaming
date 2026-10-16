@@ -1,3 +1,4 @@
+import {refreshPrices} from './scripts/refresh-prices.mjs';
 import * as noteRoute from './local-vendor-note.mjs';
 import * as eventsRoute from './local-events.mjs';
 import * as sealedRoute from './local-sealed.mjs';
@@ -32,7 +33,7 @@ const server=http.createServer(async(req,res)=>{
  }
  if(url.pathname==='/api/prices'){
  const ids=[...new Set((url.searchParams.get('ids')||'').split(',').filter(Boolean))];const stock=await read(inventoryPath,{cards:[]});const allowed=new Set((stock.cards||[]).map(c=>c.id));if(ids.length>25||!ids.length||ids.some(id=>!allowed.has(id)||!/^[0-9a-f-]{36}$/i.test(id)))return json(res,{error:'Invalid inventory IDs'},400);
- const task=async()=>{const missing=ids.filter(id=>!priceCache[id]||Date.now()-priceCache[id].fetchedAt>86400000);if(missing.length){const response=await fetch('https://api.scryfall.com/cards/collection',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','User-Agent':'Nerd4SaleGamingLocal/1.0'},body:JSON.stringify({identifiers:missing.map(id=>({id}))}),signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('Pricing provider unavailable');const payload=await response.json();for(const card of payload.data||[])priceCache[card.id]={...card.prices,fetchedAt:Date.now()};for(const id of missing)priceCache[id]??={usd:null,usd_foil:null,usd_etched:null,fetchedAt:Date.now()};await save(cachePath,priceCache);await new Promise(resolve=>setTimeout(resolve,550))}};
+ const task=async()=>{const missing=ids.filter(id=>!priceCache[id]||Date.now()-priceCache[id].fetchedAt>=21600000);if(missing.length){const response=await fetch('https://api.scryfall.com/cards/collection',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','User-Agent':'Nerd4SaleGamingLocal/1.0'},body:JSON.stringify({identifiers:missing.map(id=>({id}))}),signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('Pricing provider unavailable');const payload=await response.json();for(const card of payload.data||[])priceCache[card.id]={...card.prices,fetchedAt:Date.now()};for(const id of missing)priceCache[id]??={usd:null,usd_foil:null,usd_etched:null,fetchedAt:Date.now()};await save(cachePath,priceCache);await new Promise(resolve=>setTimeout(resolve,550))}};
  const current=fetching.then(task);fetching=current.catch(()=>{});try{await current}catch{}return json(res,{prices:Object.fromEntries(ids.filter(id=>priceCache[id]).map(id=>[id,priceCache[id]]))});
  }
  if(req.method!=='GET'&&req.method!=='HEAD')return json(res,{error:'Method not allowed'},405);
@@ -41,3 +42,6 @@ const server=http.createServer(async(req,res)=>{
 });
 server.listen(port,host,()=>console.log(`Nerd 4 Sale Gaming\nWebsite: http://${host}:${port}\nAdmin: http://${host}:${port}/admin\nKeep this window open. Press Ctrl+C to stop.`));
 server.on('error',e=>{console.error(e.code==='EADDRINUSE'?`Port ${port} is busy. Close the other copy or set PORT to another number.`:e.message);process.exitCode=1});
+
+let refreshRunning=false;async function scheduledPrices(){if(refreshRunning)return;refreshRunning=true;try{console.log("Singles price refresh:",await refreshPrices(`http://127.0.0.1:${port}`))}catch(e){console.error("Singles price refresh failed; existing prices retained:",e.message)}finally{refreshRunning=false}}
+setTimeout(scheduledPrices,5000).unref();setInterval(scheduledPrices,6*60*60*1000).unref();
