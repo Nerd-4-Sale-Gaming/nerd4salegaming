@@ -93,3 +93,30 @@ p, h1, h2, h3, .sealed-open strong, .cart-row span,
  .pagination { flex-wrap: wrap; }
  .tag { max-width: 100%; overflow-wrap: anywhere; }
 }
+
+/* Keep collection forms and the contact panel inside phone viewports. */
+#buylist-form { grid-template-columns: minmax(0, 1fr); }
+#buylist-form > *, .buylist-fields, .buylist-fields label {
+ min-width: 0;
+ max-width: 100%;
+}
+#buylist-form input, #buylist-form select, #buylist-form textarea {
+ width: 100%;
+ min-width: 0;
+ max-width: 100%;
+}
+#buylist-form input[type="file"] { overflow: hidden; }
+#buylist-form button { max-width: 100%; white-space: normal; }
+#connect { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#connect > * { min-width: 0; }
+#connect p, #connect a { overflow-wrap: anywhere; }
+@media (max-width: 720px) {
+ #connect.section {
+  grid-template-columns: minmax(0, 1fr);
+  padding: 25px;
+  gap: 24px;
+ }
+ #connect .pill { display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; }
+ #buylist-form > button { width: 100%; min-height: 46px; justify-self: stretch; }
+ #buylist-form input, #buylist-form select { min-height: 46px; }
+}
