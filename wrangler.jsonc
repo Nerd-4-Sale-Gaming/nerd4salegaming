@@ -16,8 +16,8 @@
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "nerd4salegaming-data" }],
   "vars": {
     "ADMIN_EMAILS": "nerd4salegaming@gmail.com,mcgill.patrick92@yahoo.com",
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": ""
+    "ACCESS_TEAM_DOMAIN": "https://shiny-dust-775e.cloudflareaccess.com",
+    "ACCESS_AUD": "67a6144f4d323dce3df3e7a7078ff5671af00b0846d0ae57a5d10f3d91dded21"
   },
   "routes": [{ "pattern": "nerd4salegaming.com", "custom_domain": true }],
   "triggers": { "crons": ["* * * * *"] },
